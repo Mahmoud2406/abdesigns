@@ -1,6 +1,6 @@
 # AB Designs – Marketing & Web Development Site
 
-Moderne markedsførings- og nettsideside bygget i React 18 med Vite 7 og TypeScript. Løsningen er tilpasset byrået AB Designs og viser frem tjenester, prosesser og kontaktpunkter i en enkel en-sides opplevelse.
+Moderne markedsførings- og nettsideside bygget i React 18/19 med Vite 7 og TypeScript. Løsningen er tilpasset byrået AB Designs og viser frem tjenester, prosesser og kontaktpunkter i en rask og tilgjengelig opplevelse.
 
 ## Forutsetninger
 
@@ -29,13 +29,31 @@ Utviklingsserveren starter normalt på `http://localhost:5173`. Etter at du har 
 
 ## Struktur
 
-- `src/App.tsx` – all hovedlayout og innhold for landingssiden.
-- `src/App.css` – seksjonsbasert styling, inkludert hero, tjenester, prosesser og CTA.
+- `src/App.tsx` – hovedlayout, navigasjon, seksjoner og tilgjengelighetslogikk (skip‑link, fokusfelle for mobilmeny).
+- `src/App.css` – seksjonsbasert styling, responsive regler, fokusstiler og redusert‑bevegelse fallback.
 - `src/index.css` – globale typografi- og bakgrunnsinnstillinger.
-- `src/pages/Privacy.tsx` – dedikert personvernside tilgjengelig via `/personvern`.
+- `src/pages/Privacy.tsx` / `Privacy.css` – personvernside med semantiske landemerker, tidsstempel og forbedret kontrast.
+- `src/assets/*` – logo + dekorative/ikon‑SVG-er (`hero-pattern.svg`, `icon-*.svg`).
+
+## Tilgjengelighet (WCAG) Implementert
+
+- Semantiske landemerker: `header` (banner), `nav` (aria-label="Hovedmeny"), `main` (role="main"), `footer` (contentinfo).
+- Skip‑link: "Hopp til hovedinnhold" for tastaturnavigasjon, synlig ved fokus.
+- Fokusindikatorer: Tydelige `outline` på lenker/knapper (`:focus-visible`).
+- Mobilmeny: Tastatursløyfe (fokusfelle) og Escape for å lukke; `aria-expanded` + `aria-controls` på toggle‑knapp.
+- Kontrast: Palett justert for AA-kontrast (mørk bakgrunn + lys tekst, gradienter med tilstrekkelig lyshet; primær blå er dempet).
+- Redusert bevegelse: `prefers-reduced-motion` kutter animasjoner og overganger.
+- Tekstalternativer: Dekorative SVG-er markert med `aria-hidden="true"` og tom `alt"` der passende.
+- Skjemaer: (Ingen enda) – anbefalt å legge inn riktig `label` og `aria-describedby` når kontaktskjema implementeres.
 
 ## Videre arbeid
 
 - Legg inn ekte caser, statistikk og kontaktinformasjon når dette er klart.
-- Bytt gjerne ut mailto-lenker med et kontaktskjema eller integrasjon mot CRM.
-- Vurder å legge til analysemåling (for eksempel Plausible eller GA4) før lansering.
+- Erstatt placeholder e-post med reelt domene eller kontaktskjema (f.eks. Formspree / egen backend).
+- Implementer analytics med samtykke (Plausible / Matomo / GA4) + oppdatert personvernseksjon.
+- Legg til Open Graph + meta-tags i `index.html` (tittel, beskrivelse, image) for deling.
+- Sett opp automatiske enhetstester for kritiske komponenter (navigasjon, skip-link, menylogikk).
+
+## Lisens / Rettigheter
+
+Innholdet er skreddersydd for AB Designs. Ikoner og mønster er genererte plassholdere og kan fritt erstattes.

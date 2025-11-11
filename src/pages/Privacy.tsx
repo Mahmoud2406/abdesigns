@@ -51,27 +51,29 @@ const policySections = [
 
 function Privacy() {
   return (
-    <main className="privacy-page">
-      <nav className="privacy-nav">
-        <Link to="/">← Tilbake til forsiden</Link>
-      </nav>
-      <section className="privacy-hero">
-        <h1>Personvernerklæring</h1>
-        <p>Oppdatert 11. november 2025</p>
-        <p>
-          Vi tar personvern på alvor. Her beskriver vi hvordan vi samler inn, bruker og beskytter opplysninger i forbindelse med tjenestene våre.
-        </p>
-      </section>
-
-      <section className="privacy-content">
-        {policySections.map((section) => (
-          <article key={section.title}>
-            <h2>{section.title}</h2>
-            <p>{section.body}</p>
-          </article>
-        ))}
-      </section>
-    </main>
+    <div className="privacy-wrapper">
+      <a href="#privacy-main" className="skip-link">Hopp til hovedinnhold</a>
+      <main className="privacy-page" id="privacy-main" role="main" aria-labelledby="privacy-title">
+        <nav className="privacy-nav" aria-label="Tilbake navigasjon">
+          <Link to="/">← Tilbake til forsiden</Link>
+        </nav>
+        <header className="privacy-hero">
+          <h1 id="privacy-title">Personvernerklæring</h1>
+          <p><time dateTime="2025-11-11">Oppdatert 11. november 2025</time></p>
+          <p>
+            Vi tar personvern på alvor. Her beskriver vi hvordan vi samler inn, bruker og beskytter opplysninger i forbindelse med tjenestene våre.
+          </p>
+        </header>
+        <div className="privacy-content">
+          {policySections.map((section) => (
+            <article key={section.title} aria-labelledby={section.title.replace(/[^a-z0-9]/gi, '-')}> 
+              <h2 id={section.title.replace(/[^a-z0-9]/gi, '-')}>{section.title}</h2>
+              <p>{section.body}</p>
+            </article>
+          ))}
+        </div>
+      </main>
+    </div>
   )
 }
 

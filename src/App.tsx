@@ -1,6 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import logo from './assets/ab-designs-logo.png'
+import heroPattern from './assets/hero-pattern.svg'
+import marketingIcon from './assets/icon-marketing.svg'
+import webIcon from './assets/icon-web.svg'
+import brandIcon from './assets/icon-brand.svg'
+import { useIntersectionReveal, useHeroParallax } from './animations'
 import './App.css'
 
 type Service = {
@@ -56,6 +61,12 @@ const services: Service[] = [
   },
 ]
 
+const serviceIcons: Record<string, string> = {
+  Vekstmarketing: marketingIcon,
+  Nettsideutvikling: webIcon,
+  'Brand & identitet': brandIcon,
+}
+
 const caseStudies: CaseStudy[] = [
   {
     company: 'NordicActive',
@@ -98,6 +109,10 @@ const stats = [
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navRef = useRef<HTMLElement | null>(null)
+  const pageRef = useRef<HTMLDivElement | null>(null)
+  const heroPatternRef = useRef<HTMLImageElement | null>(null)
+  const prevFocusRef = useRef<HTMLElement | null>(null)
 
   const toggleMenu = () => {
     setIsMenuOpen((open) => !open)
@@ -107,17 +122,62 @@ function App() {
     setIsMenuOpen(false)
   }
 
+  // Accessibility: Trap focus within mobile menu when open & close on Escape
+  useEffect(() => {
+    const navEl = navRef.current
+    if (!navEl) return
+    const menu = navEl.querySelector<HTMLUListElement>('#primary-navigation')
+    const focusableSelectors = 'a[href], button:not([disabled])'
+    const keyHandler = (e: KeyboardEvent) => {
+      if (!isMenuOpen) return
+      if (e.key === 'Escape') {
+        closeMenu()
+        prevFocusRef.current?.focus()
+      } else if (e.key === 'Tab') {
+        const items = Array.from(menu?.querySelectorAll<HTMLElement>(focusableSelectors) || [])
+        if (items.length === 0) return
+        const first = items[0]
+        const last = items[items.length - 1]
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      }
+    }
+    document.addEventListener('keydown', keyHandler)
+    return () => document.removeEventListener('keydown', keyHandler)
+  }, [isMenuOpen])
+
+  // Reveal animations hook
+  useIntersectionReveal(pageRef)
+  // Parallax hook
+  useHeroParallax(heroPatternRef)
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      prevFocusRef.current = document.activeElement as HTMLElement
+      // Move focus to first nav link for screen reader users
+      const firstLink = navRef.current?.querySelector<HTMLAnchorElement>('#primary-navigation a')
+      firstLink?.focus()
+    }
+  }, [isMenuOpen])
+
   return (
-    <div className="page">
-      <header className="hero">
-        <nav className="nav">
+    <div className="page" ref={pageRef}>
+      <a href="#main-content" className="skip-link">Hopp til hovedinnhold</a>
+      <header className="hero" role="banner">
+        <img src={heroPattern} alt="" aria-hidden="true" className="hero-pattern" ref={heroPatternRef} />
+        <nav className="nav" aria-label="Hovedmeny" ref={navRef}>
           <a className="brand" href="#top" onClick={closeMenu}>
             <img src={logo} alt="AB Designs logo" className="brand-logo" />
           </a>
           <button
             className={`menu-toggle ${isMenuOpen ? 'open' : ''}`}
             type="button"
-            aria-label="Meny"
+            aria-label="Åpne eller lukke meny"
             aria-expanded={isMenuOpen}
             aria-controls="primary-navigation"
             onClick={toggleMenu}
@@ -178,8 +238,8 @@ function App() {
         </div>
       </header>
 
-      <main>
-        <section className="section" id="services">
+      <main id="main-content" role="main">
+        <section className="section" id="services" data-reveal>
           <div className="section-header">
             <p className="eyebrow">Hva vi leverer</p>
             <h2>Markedsføring og nettsider som jobber sammen</h2>
@@ -190,7 +250,8 @@ function App() {
           </div>
           <div className="cards-grid">
             {services.map((service) => (
-              <article className="card" key={service.title}>
+              <article className="card" key={service.title} data-reveal>
+                <img src={serviceIcons[service.title]} alt="" aria-hidden="true" className="service-icon" />
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
                 <ul>
@@ -203,14 +264,14 @@ function App() {
           </div>
         </section>
 
-        <section className="section accent" id="projects">
+        <section className="section accent" id="projects" data-reveal>
           <div className="section-header">
             <p className="eyebrow">Utvalgte prosjekter</p>
             <h2>Vekst vi har levert sammen med kundene våre</h2>
           </div>
           <div className="case-grid">
             {caseStudies.map((study) => (
-              <article className="case-card" key={study.company}>
+              <article className="case-card" key={study.company} data-reveal>
                 <header>
                   <h3>{study.company}</h3>
                   <span>{study.outcome}</span>
@@ -221,14 +282,14 @@ function App() {
           </div>
         </section>
 
-        <section className="section" id="process">
+        <section className="section" id="process" data-reveal>
           <div className="section-header">
             <p className="eyebrow">Slik jobber vi</p>
             <h2>Fokusert, transparent og optimalisert for tempo</h2>
           </div>
           <div className="process-list">
             {process.map((step, index) => (
-              <article className="process-card" key={step.title}>
+              <article className="process-card" key={step.title} data-reveal>
                 <span className="process-index">0{index + 1}</span>
                 <div>
                   <h3>{step.title}</h3>
@@ -239,7 +300,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section" id="about">
+        <section className="section" id="about" data-reveal>
           <div className="about-grid">
             <div className="about-copy">
               <p className="eyebrow">Teamet</p>
@@ -264,7 +325,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section cta" id="contact">
+        <section className="section cta" id="contact" data-reveal>
           <div className="cta-content">
             <p className="eyebrow">Klar for neste steg?</p>
             <h2>La oss kartlegge hva slags vekstpotensial som ligger i merkevaren din.</h2>
@@ -287,7 +348,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="footer">
+      <footer className="footer" role="contentinfo">
         <div className="footer-brand">
           <strong>AB Designs</strong>
           <p>Markedsføring og nettsider som bygger vekst.</p>
