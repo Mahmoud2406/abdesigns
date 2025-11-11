@@ -4,8 +4,13 @@ Moderne markedsførings- og nettsideside bygget i React 18 med Vite 7 og TypeScr
 
 ## Forutsetninger
 
-- Node.js **20.19.0 eller nyere** (Vite 7 krever dette). Oppgrader gjerne til siste LTS før du kjører prosjektet.
+- Node.js **22.12.0 eller nyere** (prosjektet er satt til å kreve >=22.12 i `package.json` for å matche ny Vite og sikre kompatibilitet fremover).
 - npm 10 (installeres sammen med Node). Andre pakkehåndterere fungerer også, men npm-skript i `package.json` er utgangspunktet.
+
+> Tips: På Windows kan du bruke `nvm-windows` til å installere og bytte versjon:
+> 1. Installer fra https://github.com/coreybutler/nvm-windows/releases
+> 2. `nvm install 22.12.0`
+> 3. `nvm use 22.12.0`
 
 ## Kom i gang
 
