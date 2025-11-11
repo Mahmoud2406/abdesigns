@@ -7,7 +7,7 @@ import Privacy from './pages/Privacy.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/abdesigns">
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/personvern" element={<Privacy />} />

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AB Designs – Redirect</title>
+    <script>
+      // GitHub Pages SPA redirect script
+      (function() {
+        var l = window.location;
+        // If already has query param skip
+        if (l.search.indexOf('redirect=') !== -1) return;
+        // Build redirect preserving path after base
+        var path = l.pathname.replace(/\/abdesigns\//, '/');
+        var newUrl = '/abdesigns/' + 'index.html?redirect=' + encodeURIComponent(path) + l.search + l.hash;
+        window.location.replace(newUrl);
+      })();
+    </script>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+      .wrap { text-align:center; max-width:420px; }
+      h1 { font-size:1.25rem; margin:0 0 .5rem; }
+      p { color:#475569; font-size:.9rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Sender deg videre…</h1>
+      <p>Hvis du ikke blir automatisk sendt tilbake til siden, gå til <a href="/abdesigns/">forsiden</a>.</p>
+    </div>
+  </body>
+</html>
